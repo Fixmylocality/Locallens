@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}FixMyLocality{% endblock %}</title>
+    <style>
+        /* Base styles for the entire website */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+        }
+        nav a:hover {
+            background-color: #45a049;
+        }
+        main {
+            padding: 20px;
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            background-color: #f1f1f1;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .user-info {
+            margin-bottom: 20px;
+        }
+        .problem-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .problem-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        .problem-item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .messages {
+            margin-top: 20px;
+        }
+        .message {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>FixMyLocality</h1>
+        <nav>
+            <a href="{% url 'home' %}">Home</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'submit_problem' %}">Submit Problem</a>
+                <a href="{% url 'base' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'signup' %}">Sign Up</a>
+                <a href="{% url 'login' %}">Login</a>
+            {% endif %}
+        </nav>
+    </header>
+    <main>
+        {% block content %}
+        <h2>Welcome{% if user %}, {{ user.username }}{% endif %}</h2>
+        
+        {% if user %}
+            <h3>Your Previously Posted Problems:</h3>
+            {% if problems %}
+                <ul class="problem-list">
+                    {% for problem in problems %}
+                        <li class="problem-item">
+                            <h4>{{ problem.problem_type }}</h4>
+                            <p><strong>Locality:</strong> {{ problem.locality }}</p>
+                            <p><strong>Description:</strong> {{ problem.description }}</p>
+                            <p><strong>Location:</strong> {{ problem.geo_location }}</p>
+                            {% if problem.image %}
+                                <img src="{{ problem.image.url }}" alt="Problem Image">
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>You have not posted any problems yet.</p>
+            {% endif %}
+        {% else %}
+            <p>Please log in to see your posted problems.</p>
+        {% endif %}
+        {% endblock %}
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </main>
+    <footer>
+        <p>© 2024 FixMyLocality</p>
+    </footer>
+</body>
+</html>

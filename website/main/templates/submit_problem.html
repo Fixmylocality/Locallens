@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}FixMyLocality{% endblock %}</title>
+    <style>
+        /* Base styles for the entire website */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f4f4f4; /* Light background for better contrast */
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+        }
+        nav a:hover {
+            background-color: #45a049;
+        }
+        main {
+            padding: 20px;
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 8px; /* Rounded corners for a modern look */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+        footer {
+            background-color: #f1f1f1;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        form input, form textarea, form button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        form input[type="file"] {
+            padding: 5px; /* Reduce padding for file input */
+        }
+        form button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        form button:hover {
+            background-color: #45a049;
+        }
+        /* Style for labels */
+        form label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .user-info {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>FixMyLocality</h1>
+        <nav>
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'base' %}">Logout</a>
+        </nav>
+    </header>
+    <main>
+        {% block content %}
+        <h2>Submit a Problem</h2>
+
+        {% if user %}
+            <div class="user-info">
+                <p><h4>Welcome <strong>{{ user.username }}</strong></h4></p>
+            </div>
+        {% endif %}
+
+        <form method="post" id="problemForm" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Capture image directly using camera -->
+            <div>
+                <label for="captureImage">Capture Image:</label>
+                <input type="file" id="captureImage" name="image" accept="image/*" capture="environment" required>
+            </div>
+            
+            <div>
+                <label for="locality">Locality:</label>
+                <input type="text" id="locality" name="locality" required>
+            </div>
+            
+            <div>
+                <label for="problemType">Problem Type:</label>
+                <input type="text" id="problemType" name="problem_type" required>
+            </div>
+            
+            <div>
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" required></textarea>
+            </div>
+            
+            <input type="hidden" id="geoLocation" name="geo_location">
+            <button type="submit">Submit</button>
+        </form>
+
+        <script>
+            // Function to get current location
+            function getLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        document.getElementById('geoLocation').value = 
+                            `Lat: ${position.coords.latitude}, Lon: ${position.coords.longitude}`;
+                    }, function() {
+                        alert('Unable to retrieve location.');
+                    });
+                } else {
+                    alert('Geolocation is not supported by this browser.');
+                }
+            }
+
+            // Call getLocation when the page loads
+            window.onload = getLocation;
+        </script>
+        {% endblock %}
+    </main>
+    <footer>
+        <p>© 2024 FixMyLocality</p>
+    </footer>
+</body>
+</html>
