@@ -59,7 +59,7 @@ def submit_problem(request):
 
 # Note: LogoutView is not explicitly defined here but is used in urls.py
 def base(request):
-    return render(request, 'base.html')
+    return render(request, 'index.html')
 
 
 
