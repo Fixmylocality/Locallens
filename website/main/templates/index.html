@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocalLens</title>
+    <style>
+        /* Reset some default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8WX4Lx7e9xjFbbJk4F0omQ1X7L8IlTW38bGRLIWM3Zyl7Xv-Rbt4OPqoG&s=10') no-repeat center center fixed;
+            background-size: cover;
+            background-color: #4CAF50;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 44px;
+            margin: 0;
+            flex: 1;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-center {
+            display: flex;
+            justify-content: center;
+            flex: 1;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            margin: 0 10px;
+            border-radius: 25px;
+            background-color: #e48929;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        nav a:hover {
+            background-color: #e48929;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-emblem {
+            height: 60px; /* Adjust height as needed */
+            margin: 0 20px; /* Add space around the emblem */
+        }
+
+        .sign-up,
+        .login {
+            margin-left: 1rem;
+            color: #fff;
+            text-decoration: none;
+            border: 2px solid #4caf50;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            background: #015857;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .sign-up:hover,
+        .login:hover {
+            background-color: #4caf50;
+            color: #fff;
+            border-color: #4caf50;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: -250px;
+            background-color: #4caf50;
+            overflow-x: hidden;
+            transition: 0.3s;
+            padding-top: 60px;
+        }
+
+        .sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 18px;
+            color: white;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #3e8e41;
+        }
+
+        .sidebar .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        section {
+            padding: 4rem 0;
+            text-align: center;
+            color: #fff;
+            position: relative;
+            margin-bottom: 60px;
+        }
+
+        .section-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        section .content {
+            max-width: 800px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            padding: 2rem;
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+
+        section .content:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .details {
+            display: none;
+            background: white;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .content:hover .details {
+            display: block;
+        }
+
+        section#fixYourLocality,
+        section#communityWatch,
+        section#knowyourRepresentative,
+        section#giveFunding {
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        section#fixYourLocality {
+            background-image: url('https://wallpaperaccess.com/full/773716.jpg');
+        }
+
+        section#communityWatch {
+            background-image: url('https://img.etimg.com/thumb/width-1600,height-900,imgsize-106056,resizemode-75,msid-92499946/industry/media/entertainment/media/raising-the-curtain-media-industry-and-the-changing-landscape.jpg');
+        }
+
+        section#knowyourRepresentative {
+            background-image: url('https://assets.architecturaldigest.in/photos/64929e7b123a2e520b9d3e4a/master/w_1600%2Cc_limit/_DSC9158-Pano-Edit-min.jpg');
+        }
+
+        section#giveFunding {
+            background-image: url('https://cdn.pixabay.com/photo/2017/08/30/07/56/money-2696228_640.jpg');
+        }
+
+        section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+
+        footer {
+            background: #4caf50;
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links li {
+                margin: 0.5rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-left">
+                <h1>LocalLens</h1>
+            </div>
+            <div class="nav-center">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Emblem_of_India.svg/564px-Emblem_of_India.svg.png" alt="Indian Emblem" class="nav-emblem">
+            </div>
+            <div class="nav-right">
+                <a href="{% url 'base' %}">Home</a>
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'signup' %}">Sign Up</a>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <section id="fixYourLocality">
+            <a href="{% url 'signup' %}" class="section-link">
+                <div class="content">
+                    <h1>Fix Your Locality</h1>
+                    <p>Report issues and share concerns to improve your community.</p>
+                    <div class="details">
+                        <h4>Purpose</h4>
+                        <p>This section is dedicated to addressing local issues that have not been resolved. It serves as a platform for residents to voice their concerns and seek attention from local authorities.</p>
+                        <h4>Functionality</h4>
+                        <p>Residents can post about various problems they encounter in their locality, such as potholes, streetlight outages, etc., and track the progress of these issues.</p>
+                    </div>
+                </div>
+            </a>
+        </section>
+        <section id="communityWatch">
+            <a href="{% url 'community' %}" class="section-link">
+                <div class="content">
+                    <h1>Community Watch</h1>
+                    <p>Stay updated on local issues and their resolutions.</p>
+                    <div class="details">
+                        <h4>Purpose</h4>
+                        <p>This section allows residents to view and track the status of reported issues. It provides updates on progress and highlights new issues that have been reported.</p>
+                        <h4>Functionality</h4>
+                        <p>Residents can view a list or map of reported issues, filter by status, see progress updates, and report new issues.</p>
+                    </div>
+                </div>
+            </a>
+        </section>
+        <section id="knowyourRepresentative">
+            <a href="https://kla.kar.nic.in/assembly/member/members.htm" class="section-link">
+                <div class="content">
+                    <h1>Know Your Representative</h1>
+                    <p>Find out more about your local leaders and their work.</p>
+                    <div class="details">
+                        <h4>Purpose</h4>
+                        <p>This section provides information on local leaders, including BDOs, DCs, and their fund allocations. It aims to enhance transparency and accountability.</p>
+                        <h4>Functionality</h4>
+                        <p>View profiles of local representatives, details on fund allocation and usage, upcoming projects, and contact information.</p>
+                    </div>
+                </div>
+            </a>
+        </section>
+        <section id="giveFunding">
+            <a href="{% url 'fund' %}" class="section-link">
+                <div class="content">
+                    <h1>Give Funding</h1>
+                    <p>ontribute to local projects and see how funds are used.</p>
+                    <div class="details">
+                        <h4>Purpose</h4>
+                        <p>This section explains how individuals and organizations can contribute funds to local projects. It details the allocation of funds and their impact on community development.</p>
+                        <h4>Functionality</h4>
+                        <p>Residents can view information about various funding opportunities, how funds are distributed, and the outcomes of funded projects. There will be options to make contributions and track the impact of your donations.</p>
+                    </div>
+                </div>
+            </a>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 LocalLens. All rights reserved.</p>
+    </footer>
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.getElementById("sidebar");
+            if (sidebar.classList.contains("active")) {
+                sidebar.classList.remove("active");
+            } else {
+                sidebar.classList.add("active");
+            }
+        }
+    </script>
+</body>
+</html>
